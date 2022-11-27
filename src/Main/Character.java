@@ -2,6 +2,9 @@ package Main;
 
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+
+import javax.swing.ImageIcon;
 
 public class Character implements ICharacter {
 
@@ -10,11 +13,53 @@ public class Character implements ICharacter {
 	public Image currentImage;
 	private Rectangle bodyHitbox;
 	private Rectangle attackHitbox;
+	private String name;
+	private int movementUnits = 10;
+	private int direction;
 	
-	@Override
-	public void moveTo(int[] location) {
-		this.location[0] = location[0];
-		this.location[1] = location[1];
+	private ArrayList<Image> imgAbility1 = new ArrayList<Image>();
+	private ArrayList<Image> imgAbility2 = new ArrayList<Image>();
+	private ArrayList<Image> imgAbility3 = new ArrayList<Image>();
+	private ArrayList<Image> imgAbility4 = new ArrayList<Image>();
+	private ArrayList<Image> imgMove = new ArrayList<Image>();
+	private ArrayList<Image> imgIdle = new ArrayList<Image>();
+	
+	public Chunk[] move(Directions direction)
+	{
+		Chunk[] chunks = new Chunk[imgMove.size()];
+		for (int i = 0; i < imgMove.size(); i++)
+		{
+			int[] movement = new int[2];
+			switch (direction) {
+				case Right:
+					this.direction = 1;
+					movement[0] += this.movementUnits;
+					movement[1] = 0;
+				case Left:
+					this.direction = -1;
+					movement[0] -= this.movementUnits;
+					movement[1] = 0;
+				default:
+					break;
+			}
+			
+			Chunk moveChunk = new Chunk (imgMove.get(i), null, null, 0, movement);
+			chunks[i] = moveChunk;
+		}
+		
+		return chunks;
+	}
+	
+	public Chunk[] idle()
+	{
+		Chunk[] chunks = new Chunk[imgIdle.size()];
+		for (int i = 0; i < imgIdle.size(); i++)
+		{
+			Chunk idleChunk = new Chunk (imgIdle.get(i), null, null, 0, null);
+			chunks[i] = idleChunk;
+		}
+		
+		return chunks;
 	}
 	
 	public int getHp() {
@@ -58,32 +103,27 @@ public class Character implements ICharacter {
 	}
 
 	@Override
-	public void attemptDamage(int[] bounds) {
-		GameEngine.dealDmg(0);
+	public Chunk[] ability1() {
+		return null;
 	}
 
 	@Override
-	public void ability1() {
-		// TODO Auto-generated method stub
-		
+	public Chunk[] ability2() {
+		return null;
 	}
 
 	@Override
-	public void ability2() {
-		// TODO Auto-generated method stub
-		
+	public Chunk[] ability3() {
+		return null;		
+	}
+	
+	@Override
+	public Chunk[] ability4() {
+		return null;		
 	}
 
 	@Override
-	public void ability3() {
-		// TODO Auto-generated method stub
-		
+	public void substractHP(int hp) {
+		this.hp -= hp;
 	}
-
-	@Override
-	public void substractHP() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

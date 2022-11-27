@@ -44,12 +44,7 @@ public class GameEngine extends JPanel implements ActionListener {
 		background = new ImageIcon(getClass().getResource("/Images/background.jpeg")).getImage();	
 		timer = new Timer(250, this);
 		timer.start();
-	}
-	
-	public static void dealDmg(int damage) {
-		
-	}
-	
+	}	
 	
 	public void paint(Graphics g)
 	{
@@ -60,6 +55,9 @@ public class GameEngine extends JPanel implements ActionListener {
 		g2D.setFont(new Font("Ink free", Font.BOLD, 20));
 		g2D.setColor(Color.red);
 		g2D.drawString("▊▊▊▊▊▊▊▊▊▊", 5, 20);
+		
+		g2D.drawImage(characters[0].currentImage, characters[0].getLocation()[0], characters[0].getLocation()[1], null);
+		g2D.drawImage(characters[1].currentImage, characters[1].getLocation()[0], characters[1].getLocation()[1], null);
 	}
 
 	@Override
@@ -73,17 +71,48 @@ public class GameEngine extends JPanel implements ActionListener {
 	public void executeNextChunks() {
 		
 		for(int i = 0; i < 2; i++) {
+			if (allChunks.get(i).size() == 0)
+			{
+				this.addChunks(i, characters[i].idle());
+			}
 			Chunk currentChunk = allChunks.get(i).get(0);
+			
 			characters[i].setCurrentImage(currentChunk.getImage());
+			characters[i].setLocation(new int[] {characters[i].getLocation()[0] + currentChunk.getMovement()[0], characters[i].getLocation()[1] + currentChunk.getMovement()[1]});
+			characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
+			characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
+		}
+		
+		for (int i = 0; i < 2; i++)
+		{
+			Chunk currentChunk = allChunks.get(i).get(0);
+			Chunk otherChunk = allChunks.get(i + 1 % 2).get(0);
+			if (currentChunk.getDamage() != 0)
+			{
+				if (currentChunk.getAttackHitbox().intersects(otherChunk.getBodyHitbox()))
+				{
+					characters[i + 1 % 2].substractHP(currentChunk.getDamage());
+				}
+			}
+		}
+		
+		if (characters[0].getHp() <= 0)
+		{
+			this.gameOver = true;
+		}
+		
+		if (characters[1].getHp() <= 0)
+		{
+			this.gameOver = true;
 		}
 	}
 	
-	public void executeChunk(Chunk character) {
-		character.setC
-	}
-	
-	public void checkPlayerColision()
+	public void addChunks(int index, Chunk[] chunks)
 	{
+		for (int i = 0; i < chunks.length; i++)
+		{
+			allChunks.get(index).add(chunks[i]);
+		}
 	}
 	
 	public void gameOver()
@@ -97,31 +126,52 @@ public class GameEngine extends JPanel implements ActionListener {
 	{
 		@Override
 		public void keyPressed(KeyEvent e) {
-			// TODO Auto-generated method stub
 			super.keyPressed(e);
 			
 			switch(e.getKeyCode())
 			{
 			case KeyEvent.VK_UP:
-				break;
-			case KeyEvent.VK_DOWN:
+				addChunks(0, characters[0].move(Directions.Up));
 				break;
 			case KeyEvent.VK_LEFT:
+				addChunks(0, characters[0].move(Directions.Left));
 				break;
 			case KeyEvent.VK_RIGHT:
+				addChunks(0, characters[0].move(Directions.Right));
 				break;
-			case KeyEvent.VK_SPACE:
-				character1.ability1();
+			case KeyEvent.VK_MINUS:
+				addChunks(0, characters[0].ability1());
+				break;
+			case KeyEvent.VK_PLUS:
+				addChunks(0, characters[0].ability2());
+				break;
+			case KeyEvent.VK_ENTER:
+				addChunks(0, characters[0].ability3());
+				break;
+			case KeyEvent.VK_DOWN:
+				addChunks(0, characters[0].ability4());
 				break;
 			case KeyEvent.VK_A:
-				break;
-			case KeyEvent.VK_S:
+				addChunks(1, characters[1].move(Directions.Left));
 				break;
 			case KeyEvent.VK_D:
+				addChunks(1, characters[1].move(Directions.Right));
 				break;
-			case KeyEvent.VK_F:
+			case KeyEvent.VK_W:
+				addChunks(1, characters[1].move(Directions.Up));
 				break;
-
+			case KeyEvent.VK_SPACE:
+				addChunks(1, characters[1].ability1());
+				break;
+			case KeyEvent.VK_E:
+				addChunks(1, characters[1].ability2());
+				break;
+			case KeyEvent.VK_SHIFT:
+				addChunks(1, characters[1].ability3());
+				break;
+			case KeyEvent.VK_Q:
+				addChunks(1, characters[1].ability4());
+				break;
 			}	
 		}
 	}
