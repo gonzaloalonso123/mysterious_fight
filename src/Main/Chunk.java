@@ -9,8 +9,8 @@ import javax.swing.ImageIcon;
 public class Chunk {
 
 	private Image image;
-	private Rectangle bodyHitbox = new Rectangle();
-	private Rectangle attackHitbox = new Rectangle();
+	private Rectangle bodyHitbox;
+	private Rectangle attackHitbox;
 	private int[] movement;
 	private int damage;
 	
@@ -34,11 +34,9 @@ public class Chunk {
 		return image;
 	}
 
-
 	public Rectangle getBodyHitbox() {
 		return bodyHitbox;
 	}
-
 
 	public Rectangle getAttackHitbox() {
 		return attackHitbox;
@@ -46,5 +44,21 @@ public class Chunk {
 
 	public int getDamage() {
 		return damage;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public void setBodyHitbox(Rectangle bodyHitbox) {
+		this.bodyHitbox = bodyHitbox;
+	}
+
+	public void setAttackHitbox(Rectangle attackHitbox) {
+		this.attackHitbox = attackHitbox;
+	}
+
+	public void setDamage(int damage) {
+		this.damage = damage;
 	}
 }

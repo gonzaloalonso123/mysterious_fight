@@ -1,5 +1,6 @@
 package Main;
 
+import java.awt.Rectangle;
 import java.util.Arrays;
 
 import javax.swing.ImageIcon;
@@ -42,6 +43,7 @@ public class PossessedMonk extends Character {
 	public Chunk[] ability1() {
 		// TODO Auto-generated method stub
 		Chunk[] chunks = super.ability1();
+		chunks[1].setAttackHitbox(new Rectangle (this.getLocation()[0] + super.getCurrentImage().getWidth(null) / 2, this.getLocation()[1] + super.getCurrentImage().getHeight(null) / 2 - 100, 150, 80));
 		return chunks;
 	}
 

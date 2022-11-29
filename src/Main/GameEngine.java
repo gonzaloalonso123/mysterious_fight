@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -63,19 +64,31 @@ public class GameEngine extends JPanel implements ActionListener {
 		g2D.setFont(new Font("Ink free", Font.BOLD, 20));
 		g2D.setColor(Color.red);
 		g2D.drawString("▊▊▊▊▊▊▊▊▊▊", 5, 20);
-		
-		for(int i = 0; i < characters.length; i++) {
-			if(characters[i].getDirection() == 1) {
-				g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0], characters[i].getLocation()[1], null);				
+
+		for (int i = 0; i < characters.length; i++) {
+			if (characters[i].getDirection() == 1) {
+				g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0],
+						characters[i].getLocation()[1], null);
+			} else {
+				try {
+					int width = characters[i].currentImage.getWidth(getFocusCycleRootAncestor());
+					int height = characters[i].currentImage.getHeight(getFocusCycleRootAncestor());
+					g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0] + width,
+							characters[i].getLocation()[1], -width, height, null);
+				} catch (Exception e) {
+					System.out.println("Not loaded");
+				}
 			}
-			else {			
-				int width = characters[i].currentImage.getWidth(getFocusCycleRootAncestor());
-				int height = characters[i].currentImage.getHeight(getFocusCycleRootAncestor());
-				g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0] + width, characters[i].getLocation()[1], -width, height, null);
+			if(characters[i].getAttackHitbox() != null) {
+				paintHitBox(g2D, characters[i].getAttackHitbox());
 			}
 		}
 	}
-
+	
+	public void paintHitBox(Graphics2D g2D, Rectangle bounds) {
+		g2D.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -94,6 +107,7 @@ public class GameEngine extends JPanel implements ActionListener {
 
 			characters[i].setCurrentImage(currentChunk.getImage());
 			if (currentChunk.getMovement() != null) {
+				System.out.println(characters[i].getLocation()[0]);
 				characters[i].setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
 						characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
 			}
@@ -101,6 +115,7 @@ public class GameEngine extends JPanel implements ActionListener {
 				characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
 			}
 			if (currentChunk.getAttackHitbox() != null) {
+				System.out.println("eentra");
 				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
 			}
 

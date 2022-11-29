@@ -147,6 +147,8 @@ public class Character implements ICharacter {
 
 	public void setAttackHitbox(Rectangle attackHitbox) {
 		this.attackHitbox = attackHitbox;
+		System.out.println("Changed attack hitbox");
+		System.out.println(this.attackHitbox.toString());
 	}
 
 	public void setHp(int hp) {
