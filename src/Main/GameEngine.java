@@ -66,7 +66,7 @@ public class GameEngine extends JPanel implements ActionListener {
 		
 		for(int i = 0; i < characters.length; i++) {
 			if(characters[i].getDirection() == 1) {
-				g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0], characters[0].getLocation()[1], null);				
+				g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0], characters[i].getLocation()[1], null);				
 			}
 			else {			
 				int width = characters[i].currentImage.getWidth(getFocusCycleRootAncestor());
@@ -156,6 +156,9 @@ public class GameEngine extends JPanel implements ActionListener {
 			case KeyEvent.VK_RIGHT:
 				addChunks(0, characters[0].move(Directions.Right));
 				break;
+			case KeyEvent.VK_DOWN:
+				addChunks(0, characters[0].move(Directions.Down));
+				break;
 			case KeyEvent.VK_MINUS:
 				addChunks(0, characters[0].ability1());
 				break;
@@ -165,9 +168,6 @@ public class GameEngine extends JPanel implements ActionListener {
 			case KeyEvent.VK_ENTER:
 				addChunks(0, characters[0].ability3());
 				break;
-			case KeyEvent.VK_DOWN:
-				addChunks(0, characters[0].ability4());
-				break;
 			case KeyEvent.VK_A:
 				addChunks(1, characters[1].move(Directions.Left));
 				break;
@@ -176,6 +176,9 @@ public class GameEngine extends JPanel implements ActionListener {
 				break;
 			case KeyEvent.VK_W:
 				addChunks(1, characters[1].move(Directions.Up));
+				break;
+			case KeyEvent.VK_S:
+				addChunks(1, characters[1].move(Directions.Down));
 				break;
 			case KeyEvent.VK_SPACE:
 				addChunks(1, characters[1].ability1());

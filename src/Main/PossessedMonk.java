@@ -74,11 +74,12 @@ public class PossessedMonk extends Character {
 			}
 			break;
 		case Down:
+			System.out.println(super.getImgMove().size());
 			for (int i = 0; i < super.getImgMove().size(); i++) {
 				int[] movement = new int[2];
-				if (super.getLocation()[1] >= 200) {
+				if (super.getLocation()[1] <= 170) {
 					movement[0] += 0;
-					movement[1] = -30;
+					movement[1] = 30;
 				}
 				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement);
 			}
