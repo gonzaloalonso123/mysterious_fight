@@ -100,12 +100,14 @@ public class Character implements ICharacter {
 				this.direction = 1;
 				movement[0] += this.movementUnits;
 				movement[1] = 0;
+				this.bodyHitbox.x += this.movementUnits;
 				break;
 			case Left:
 				System.out.println("here");
 				this.direction = -1;
 				movement[0] -= this.movementUnits;
 				movement[1] = 0;
+				this.bodyHitbox.x -= this.movementUnits;
 				break;
 			default:
 				break;
@@ -117,6 +119,10 @@ public class Character implements ICharacter {
 		}
 
 		return chunks;
+	}
+	
+	public Character(int x, int y) {
+		this.setLocation(new int[] {x, y});
 	}
 
 	public Chunk[] idle() {

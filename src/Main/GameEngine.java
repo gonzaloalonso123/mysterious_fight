@@ -40,11 +40,9 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new PossessedMonk();
-		characters[1] = new PossessedMonk();
+		characters[0] = new PossessedMonk(500, 200);
+		characters[1] = new PossessedMonk(50, 200);
 
-		characters[0].setLocation(new int[] { 500, 200 });
-		characters[1].setLocation(new int[] { 50, 200 });
 		characters[0].setDirection(-1);
 		characters[1].setDirection(1);
 
@@ -81,6 +79,9 @@ public class GameEngine extends JPanel implements ActionListener {
 			}
 			if(characters[i].getAttackHitbox() != null) {
 				paintHitBox(g2D, characters[i].getAttackHitbox());
+			}
+			if(characters[i].getBodyHitbox() != null) {
+				paintHitBox(g2D, characters[i].getBodyHitbox());
 			}
 		}
 	}
@@ -124,11 +125,11 @@ public class GameEngine extends JPanel implements ActionListener {
 		for (int i = 0; i < 2; i++) {
 			Chunk currentChunk = allChunks.get(i).get(0);
 			Chunk otherChunk = allChunks.get((i + 1) % 2).get(0);
-			if (currentChunk.getDamage() != 0) {
-				if (currentChunk.getAttackHitbox().intersects(otherChunk.getBodyHitbox())) {
-					characters[i + 1 % 2].substractHP(currentChunk.getDamage());
-				}
-			}
+//			if (currentChunk.getDamage() != 0) {
+//				if (currentChunk.getAttackHitbox().intersects(otherChunk.getBodyHitbox())) {
+//					characters[i + 1 % 2].substractHP(currentChunk.getDamage());
+//				}
+//			}
 		}
 
 		allChunks.get(0).remove(0);

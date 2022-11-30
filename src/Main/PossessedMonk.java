@@ -9,7 +9,8 @@ public class PossessedMonk extends Character {
 
 	public boolean flying = false;
 
-	public PossessedMonk() {
+	public PossessedMonk(int x, int y) {
+		super(x, y);
 		super.getImgIdle().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle1.png")).getImage());
 		super.getImgIdle().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle2.png")).getImage());
 		super.getImgMove().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move1.png")).getImage());
@@ -37,14 +38,24 @@ public class PossessedMonk extends Character {
 		super.getImgAbility3().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti5.png")).getImage());
 		super.getImgJump().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
 		super.getImgJump().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
+		System.out.println("y " + super.getLocation()[1]);
+		super.setCurrentImage(super.getImgIdle().get(0));
+		super.setBodyHitbox(new Rectangle(super.getLocation()[0] + super.getCurrentImage().getWidth(null) / 4,
+				super.getLocation()[1], 200, 400));
 	}
 
 	@Override
 	public Chunk[] ability1() {
 		// TODO Auto-generated method stub
-		Chunk[] chunks = super.ability1();
-		chunks[1].setAttackHitbox(new Rectangle (this.getLocation()[0] + super.getCurrentImage().getWidth(null) / 2, this.getLocation()[1] + super.getCurrentImage().getHeight(null) / 2 - 100, 150, 80));
-		return chunks;
+		if (!flying) {
+			Chunk[] chunks = super.ability1();
+			chunks[1].setAttackHitbox(new Rectangle(
+					(this.getLocation()[0] + super.getCurrentImage().getWidth(null) / 2) * super.getDirection(),
+					this.getLocation()[1] + super.getCurrentImage().getHeight(null) / 2 - 100, 150, 80));
+			chunks[1].setDamage(10);
+			return chunks;
+		}
+		return idle();
 	}
 
 	@Override
