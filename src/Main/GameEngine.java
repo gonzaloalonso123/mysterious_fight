@@ -40,8 +40,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Psycon();
-		characters[1] = new Psycon();
+		characters[0] = new Psycon(500, 200);
+		characters[1] = new Psycon(50, 200);
 
 		characters[0].setDirection(-1);
 		characters[1].setDirection(1);
@@ -87,7 +87,7 @@ public class GameEngine extends JPanel implements ActionListener {
 	}
 
 	public void paintHitBox(Graphics2D g2D, Rectangle bounds) {
-//		g2D.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+		g2D.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
 	@Override
