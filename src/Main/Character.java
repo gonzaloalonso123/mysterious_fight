@@ -33,26 +33,33 @@ public class Character implements ICharacter
 		for (int i = 0; i < imgsMove.size(); i++) {
 			int[] movement = new int[2];
 			switch (direction) {
-				case Right:
-					this.direction = 1;
-					movement[0] += this.movementUnits;
-					movement[1] = 0;
-					break;
-				case Left:
-					this.direction = -1;
-					movement[0] -= this.movementUnits;
-					movement[1] = 0;
-					break;
-				default:
-					break;
+			case Right:
+				this.direction = 1;
+				movement[0] += this.movementUnits;
+				movement[1] = 0;
+				this.bodyHitbox.x += this.movementUnits;
+				break;
+			case Left:
+				System.out.println("here");
+				this.direction = -1;
+				movement[0] -= this.movementUnits;
+				movement[1] = 0;
+				this.bodyHitbox.x -= this.movementUnits;
+				break;
+			default:
+				break;
 			}
 			if (direction == Directions.Left || direction == Directions.Right) {
-				Chunk moveChunk = new Chunk(imgsMove.get(i), null, null, 0, movement);
+				Chunk moveChunk = new Chunk(imgMove.get(i), null, null, 0, movement, null);
 				chunks[i] = moveChunk;
 			}
 		}
 
 		return chunks;
+	}
+	
+	public Character(int x, int y) {
+		this.setLocation(new int[] {x, y});
 	}
 
 	public Chunk[] idle() {
@@ -158,11 +165,57 @@ public class Character implements ICharacter
 		this.currentImage = currentImage;
 	}
 
+	@Override
+	public Chunk[] ability1() {
+		Chunk[] chunks = new Chunk[imgAbility1.size()];
+
+		for (int i = 0; i < imgAbility1.size(); i++) {
+			Chunk abilityChunk = new Chunk(imgAbility1.get(i), null, null, 0, null, null);
+			chunks[i] = abilityChunk;
+		}
+
+		return chunks;
+	}
+
+	@Override
+	public Chunk[] ability2() {
+		Chunk[] chunks = new Chunk[imgAbility2.size()];
+
+		for (int i = 0; i < imgAbility2.size(); i++) {
+			Chunk abilityChunk = new Chunk(imgAbility2.get(i), null, null, 0, null, null);
+			chunks[i] = abilityChunk;
+		}
+
+		return chunks;
+	}
+
 	public int getDirection() {
 		return this.direction;
 	}
 
 	public void setDirection(int direction) {
 		this.direction = direction;
-	}	
+	}
+
+	@Override
+	public Chunk[] ability3() {
+		Chunk[] chunks = new Chunk[imgAbility3.size()];
+
+		for (int i = 0; i < imgAbility3.size(); i++) {
+			Chunk abilityChunk = new Chunk(imgAbility3.get(i), null, null, 0, null, null);
+			chunks[i] = abilityChunk;
+		}
+
+		return chunks;
+	}
+
+	@Override
+	public Chunk[] ability4() {
+		return null;
+	}
+
+	@Override
+	public void substractHP(int hp) {
+		this.hp -= hp;
+	}
 }
