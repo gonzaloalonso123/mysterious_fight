@@ -13,6 +13,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -77,19 +80,19 @@ public class GameEngine extends JPanel implements ActionListener {
 					System.out.println("Not loaded");
 				}
 			}
-			if(characters[i].getAttackHitbox() != null) {
+			if (characters[i].getAttackHitbox() != null) {
 				paintHitBox(g2D, characters[i].getAttackHitbox());
 			}
-			if(characters[i].getBodyHitbox() != null) {
+			if (characters[i].getBodyHitbox() != null) {
 				paintHitBox(g2D, characters[i].getBodyHitbox());
 			}
 		}
 	}
-	
+
 	public void paintHitBox(Graphics2D g2D, Rectangle bounds) {
-		g2D.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+//		g2D.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
-	
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
@@ -108,9 +111,13 @@ public class GameEngine extends JPanel implements ActionListener {
 
 			characters[i].setCurrentImage(currentChunk.getImage());
 			if (currentChunk.getMovement() != null) {
-				System.out.println(characters[i].getLocation()[0]);
-				characters[i].setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
-						characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
+				Rectangle bodyHitBox = characters[i].getBodyHitbox();
+				if (bodyHitBox.x + bodyHitBox.width < WIDTH && bodyHitBox.x > 0
+						&& bodyHitBox.y + bodyHitBox.height < HEIGHT && bodyHitBox.x > 0) {
+					characters[i]
+							.setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
+									characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
+				}
 			}
 			if (currentChunk.getBodyHitbox() != null) {
 				characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
@@ -118,6 +125,9 @@ public class GameEngine extends JPanel implements ActionListener {
 			if (currentChunk.getAttackHitbox() != null) {
 				System.out.println("eentra");
 				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
+			}
+			if (currentChunk.getSound() != null) {
+				sound(currentChunk.getSound());
 			}
 
 		}
@@ -155,6 +165,18 @@ public class GameEngine extends JPanel implements ActionListener {
 		gameOver = true;
 		timer.stop();
 		repaint();
+	}
+
+	public void sound(String path) {
+		try {
+			AudioInputStream audioInputStream = AudioSystem
+					.getAudioInputStream(this.getClass().getResource("/Sounds" + path));
+			Clip clip = AudioSystem.getClip();
+			clip.open(audioInputStream);
+			clip.start();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	public class KeyP extends KeyAdapter {

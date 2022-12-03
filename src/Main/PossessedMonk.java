@@ -83,7 +83,7 @@ public class PossessedMonk extends Character {
 					movement[0] += 0;
 					movement[1] = -30;
 				}
-				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement);
+				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement, null);
 			}
 			break;
 		case Down:
@@ -94,7 +94,7 @@ public class PossessedMonk extends Character {
 					movement[0] += 0;
 					movement[1] = 30;
 				}
-				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement);
+				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement, null);
 			}
 			if (flying && super.getLocation()[1] >= 200) {
 				super.getLocation()[1] = 200;
@@ -129,10 +129,13 @@ public class PossessedMonk extends Character {
 
 	@Override
 	public Chunk[] ability3() {
-		Chunk[] chunks = super.ability3();
-		chunks[4].setMovement(new int[] { 100 * super.getDirection(), 0 });
-
-		return chunks;
+		if (!flying) {
+			Chunk[] chunks = super.ability3();
+			chunks[4].setMovement(new int[] { 100 * super.getDirection(), 0 });
+			chunks[1].setSound("/PossessedMonk/ulti.wav");
+			return chunks;
+		}
+		return idle();
 	}
 
 	@Override

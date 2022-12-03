@@ -13,15 +13,25 @@ public class Chunk {
 	private Rectangle attackHitbox;
 	private int[] movement;
 	private int damage;
+	private String sound;
 	
-	public Chunk(Image image, Rectangle bodyHitbox, Rectangle attackHitbox, int damage, int[] movement) {
+	public Chunk(Image image, Rectangle bodyHitbox, Rectangle attackHitbox, int damage, int[] movement, String sound) {
 		this.image = image;
 		this.bodyHitbox = bodyHitbox;
 		this.attackHitbox = attackHitbox;
 		this.damage = damage;
 		this.movement = movement;
+		this.sound = sound;
 	}
 	
+	public String getSound() {
+		return sound;
+	}
+
+	public void setSound(String sound) {
+		this.sound = sound;
+	}
+
 	public void setMovement(int[] movement) {
 		this.movement = movement;
 	}
