@@ -24,9 +24,6 @@ public class GameEngine extends JPanel implements ActionListener {
 
 	ArrayList<ArrayList<Chunk>> allChunks = new ArrayList<ArrayList<Chunk>>();
 
-	// new
-	// new
-
 	boolean gameOver = false;
 
 	Character[] characters = new Character[2];
@@ -40,8 +37,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new PossessedMonk();
-		characters[1] = new PossessedMonk();
+		characters[0] = new Psycon();
+		characters[1] = new Psycon();
 
 		characters[0].setLocation(new int[] { 500, 200 });
 		characters[1].setLocation(new int[] { 50, 200 });
@@ -118,7 +115,10 @@ public class GameEngine extends JPanel implements ActionListener {
 				System.out.println("eentra");
 				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
 			}
-
+			else
+			{
+				characters[i].setAttackHitbox(null);
+			}
 		}
 
 		for (int i = 0; i < 2; i++) {
@@ -126,7 +126,7 @@ public class GameEngine extends JPanel implements ActionListener {
 			Chunk otherChunk = allChunks.get((i + 1) % 2).get(0);
 			if (currentChunk.getDamage() != 0) {
 				if (currentChunk.getAttackHitbox().intersects(otherChunk.getBodyHitbox())) {
-					characters[i + 1 % 2].substractHP(currentChunk.getDamage());
+					characters[i + 1 % 2].setHp(characters[i + 1 % 2].getHp() - currentChunk.getDamage());
 				}
 			}
 		}
@@ -141,7 +141,6 @@ public class GameEngine extends JPanel implements ActionListener {
 		if (characters[1].getHp() <= 0) {
 			this.gameOver = true;
 		}
-
 	}
 
 	public void addChunks(int index, Chunk[] chunks) {
@@ -163,7 +162,7 @@ public class GameEngine extends JPanel implements ActionListener {
 
 			switch (e.getKeyCode()) {
 			case KeyEvent.VK_UP:
-				addChunks(0, characters[0].move(Directions.Up));
+				addChunks(0, characters[0].jump());
 				break;
 			case KeyEvent.VK_LEFT:
 				addChunks(0, characters[0].move(Directions.Left));
@@ -172,7 +171,7 @@ public class GameEngine extends JPanel implements ActionListener {
 				addChunks(0, characters[0].move(Directions.Right));
 				break;
 			case KeyEvent.VK_DOWN:
-				addChunks(0, characters[0].move(Directions.Down));
+				addChunks(0, characters[0].down());
 				break;
 			case KeyEvent.VK_MINUS:
 				addChunks(0, characters[0].ability1());
@@ -190,10 +189,10 @@ public class GameEngine extends JPanel implements ActionListener {
 				addChunks(1, characters[1].move(Directions.Right));
 				break;
 			case KeyEvent.VK_W:
-				addChunks(1, characters[1].move(Directions.Up));
+				addChunks(1, characters[1].jump());
 				break;
 			case KeyEvent.VK_S:
-				addChunks(1, characters[1].move(Directions.Down));
+				addChunks(1, characters[1].down());
 				break;
 			case KeyEvent.VK_SPACE:
 				addChunks(1, characters[1].ability1());
@@ -203,9 +202,6 @@ public class GameEngine extends JPanel implements ActionListener {
 				break;
 			case KeyEvent.VK_SHIFT:
 				addChunks(1, characters[1].ability3());
-				break;
-			case KeyEvent.VK_Q:
-				addChunks(1, characters[1].ability4());
 				break;
 			}
 		}
