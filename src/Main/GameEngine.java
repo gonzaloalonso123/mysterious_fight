@@ -40,8 +40,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Psycon(500, 200);
-		characters[1] = new Psycon(50, 200);
+		characters[0] = new PossessedMonk(500, 200);
+		characters[1] = new PossessedMonk(50, 200);
 
 		characters[0].setDirection(-1);
 		characters[1].setDirection(1);
@@ -109,25 +109,24 @@ public class GameEngine extends JPanel implements ActionListener {
 			characters[i].setCurrentImage(currentChunk.getImage());
 			if (currentChunk.getMovement() != null) {
 				Rectangle bodyHitBox = characters[i].getBodyHitbox();
-				if (bodyHitBox.x + bodyHitBox.width < WIDTH && bodyHitBox.x > 0
-						&& bodyHitBox.y + bodyHitBox.height < HEIGHT && bodyHitBox.x > 0) {
+				if (bodyHitBox.x + bodyHitBox.width <= WIDTH && bodyHitBox.x >= 0
+						&& bodyHitBox.y + bodyHitBox.height <= HEIGHT && bodyHitBox.x >= 0) {
 					characters[i]
 							.setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
 									characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
+					if (currentChunk.getBodyHitbox() != null) {
+						characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
+					}
 				}
 			}
-			if (currentChunk.getBodyHitbox() != null) {
-				characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
-			}
+
 			if (currentChunk.getAttackHitbox() != null) {
 				System.out.println("eentra");
 				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
 			}
 			if (currentChunk.getSound() != null) {
 				sound(currentChunk.getSound());
-			}
-			else
-			{
+			} else {
 				characters[i].setAttackHitbox(null);
 			}
 		}

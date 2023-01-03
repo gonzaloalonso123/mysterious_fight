@@ -8,40 +8,16 @@ import javax.swing.ImageIcon;
 public class PossessedMonk extends Character {
 
 	public boolean flying = false;
+	private final int HITBOX_WIDTH = 200;
+	private final int HITBOX_HEIGHT = 400;
 
 	public PossessedMonk(int x, int y) {
 		super(x, y);
-		super.getImgIdle().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle1.png")).getImage());
-		super.getImgIdle().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle2.png")).getImage());
-		super.getImgMove().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move1.png")).getImage());
-		super.getImgMove().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move2.png")).getImage());
-//		super.getImgAbility1().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/punch1.png")).getImage());
-		super.getImgAbility1()
-				.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/punch2.png")).getImage());
-//		super.getImgAbility1().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/punch3.png")).getImage());
-		super.getImgAbility1()
-				.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/punch4.png")).getImage());
-
-		super.getImgAbility2()
-				.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
-		super.getImgAbility2()
-				.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
-		super.getImgAbility2()
-				.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
-		super.getImgAbility2()
-				.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
-
-		super.getImgAbility3().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti1.png")).getImage());
-		super.getImgAbility3().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti2.png")).getImage());
-		super.getImgAbility3().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti3.png")).getImage());
-		super.getImgAbility3().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti4.png")).getImage());
-		super.getImgAbility3().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti5.png")).getImage());
-		super.getImgJump().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
-		super.getImgJump().add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
-		System.out.println("y " + super.getLocation()[1]);
-		super.setCurrentImage(super.getImgIdle().get(0));
-		super.setBodyHitbox(new Rectangle(super.getLocation()[0] + super.getCurrentImage().getWidth(null) / 4,
-				super.getLocation()[1], 200, 400));
+		loadImages();
+		super.setCurrentImage(this.imgsIdle.get(0));
+		this.bodyHitbox = new Rectangle(
+				super.getLocation()[0] + super.getCurrentImage().getWidth(null) / 2 - HITBOX_WIDTH / 2,
+				super.getLocation()[1], HITBOX_WIDTH, HITBOX_HEIGHT);
 	}
 
 	@Override
@@ -49,8 +25,7 @@ public class PossessedMonk extends Character {
 		// TODO Auto-generated method stub
 		if (!flying) {
 			Chunk[] chunks = super.ability1();
-			chunks[1].setAttackHitbox(new Rectangle(
-					(this.getLocation()[0] + super.getCurrentImage().getWidth(null) / 2) * super.getDirection(),
+			chunks[1].setAttackHitbox(new Rectangle((this.bodyHitbox.x + HITBOX_WIDTH / 2 + this.direction * 20),
 					this.getLocation()[1] + super.getCurrentImage().getHeight(null) / 2 - 100, 150, 80));
 			chunks[1].setDamage(10);
 			return chunks;
@@ -59,60 +34,51 @@ public class PossessedMonk extends Character {
 	}
 
 	@Override
-	public Chunk[] move(Directions direction) {
+	public Chunk[] jump() {
+		Chunk[] chunks = super.jump();
+		if (!flying) {
+			flying = true;
+			this.imgsIdle.clear();
+			this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
+			this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
+			this.imgsMove.clear();
+			this.imgsMove.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
+			this.imgsMove.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
+		}
+		for (int i = 0; i < this.imgsMove.size(); i++) {
+			int[] movement = new int[2];
+			if (super.getLocation()[1] > 30) {
+				movement[0] += 0;
+				movement[1] = -30;
+				this.bodyHitbox.y -= 30;
+			}
+			chunks[i] = new Chunk(this.imgsMove.get(i), null, null, 0, movement, null);
+		}
+		return chunks;
+	}
+
+	@Override
+	public Chunk[] down() {
 		// TODO Auto-generated method stub
-		Chunk[] chunks = super.move(direction);
-		switch (direction) {
-		case Up:
-			if (!flying) {
-				flying = true;
-				super.getImgIdle().clear();
-				super.getImgIdle()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
-				super.getImgIdle()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
-				super.getImgMove().clear();
-				super.getImgMove()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
-				super.getImgMove()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
+		Chunk[] chunks = super.down();
+		for (int i = 0; i < this.imgsMove.size(); i++) {
+			int[] movement = new int[2];
+			if (super.getLocation()[1] <= 170) {
+				movement[0] += 0;
+				movement[1] = 30;
+				this.bodyHitbox.y += 30;
 			}
-			for (int i = 0; i < super.getImgMove().size(); i++) {
-				int[] movement = new int[2];
-				if (super.getLocation()[1] > 30) {
-					movement[0] += 0;
-					movement[1] = -30;
-				}
-				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement, null);
-			}
-			break;
-		case Down:
-			System.out.println(super.getImgMove().size());
-			for (int i = 0; i < super.getImgMove().size(); i++) {
-				int[] movement = new int[2];
-				if (super.getLocation()[1] <= 170) {
-					movement[0] += 0;
-					movement[1] = 30;
-				}
-				chunks[i] = new Chunk(super.getImgMove().get(i), null, null, 0, movement, null);
-			}
-			if (flying && super.getLocation()[1] >= 200) {
-				super.getLocation()[1] = 200;
-				flying = false;
-				super.getImgIdle().clear();
-				super.getImgIdle()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle1.png")).getImage());
-				super.getImgIdle()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle2.png")).getImage());
-				super.getImgMove().clear();
-				super.getImgMove()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move1.png")).getImage());
-				super.getImgMove()
-						.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move2.png")).getImage());
-			}
-			break;
-		default:
-			break;
+			chunks[i] = new Chunk(this.imgsMove.get(i), null, null, 0, movement, null);
+		}
+		if (flying && super.getLocation()[1] >= 200) {
+			super.getLocation()[1] = 200;
+			flying = false;
+			this.imgsIdle.clear();
+			this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle1.png")).getImage());
+			this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle2.png")).getImage());
+			this.imgsMove.clear();
+			this.imgsMove.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move1.png")).getImage());
+			this.imgsMove.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move2.png")).getImage());
 		}
 		return chunks;
 	}
@@ -144,4 +110,23 @@ public class PossessedMonk extends Character {
 		return super.ability4();
 	}
 
+	public void loadImages() {
+		this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle1.png")).getImage());
+		this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle2.png")).getImage());
+		this.imgsMove.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move1.png")).getImage());
+		this.imgsMove.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/move2.png")).getImage());
+		this.imgsAbility1.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/punch2.png")).getImage());
+		this.imgsAbility1.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/punch4.png")).getImage());
+		this.imgsAbility2.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
+		this.imgsAbility2.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
+		this.imgsAbility2.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
+		this.imgsAbility2.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/dodge1.png")).getImage());
+		this.imgsAbility3.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti1.png")).getImage());
+		this.imgsAbility3.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti2.png")).getImage());
+		this.imgsAbility3.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti3.png")).getImage());
+		this.imgsAbility3.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti4.png")).getImage());
+		this.imgsAbility3.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/ulti5.png")).getImage());
+		this.imgsJump.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump1.png")).getImage());
+		this.imgsJump.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/jump2.png")).getImage());
+	}
 }
