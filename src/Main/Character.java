@@ -48,7 +48,8 @@ public class Character implements ICharacter
 				break;
 			}
 			if (direction == Directions.Left || direction == Directions.Right) {
-				Chunk moveChunk = new Chunk(imgsMove.get(i), null, null, 0, movement, null);
+				Chunk moveChunk = new Chunk(imgsMove.get(i), null, null, 0, movement, null, 
+						i == imgsMove.size() - 1 ? true : false);
 				chunks[i] = moveChunk;
 			}
 		}
@@ -59,7 +60,8 @@ public class Character implements ICharacter
 	public Chunk[] idle() {
 		Chunk[] chunks = new Chunk[imgsIdle.size()];
 		for (int i = 0; i < imgsIdle.size(); i++) {
-			Chunk idleChunk = new Chunk(imgsIdle.get(i), null, null, 0, null, null);
+			Chunk idleChunk = new Chunk(imgsIdle.get(i), null, null, 0, null, null, 
+					i == imgsMove.size() - 1 ? true : false);
 			chunks[i] = idleChunk;
 		}
 
@@ -69,7 +71,8 @@ public class Character implements ICharacter
 	public Chunk[] jump() {
 		Chunk[] chunks = new Chunk[imgsJump.size()];
 		for (int i = 0; i < imgsJump.size(); i++) {
-			Chunk jumpChunk = new Chunk(imgsJump.get(i), null, null, 0, null, null);
+			Chunk jumpChunk = new Chunk(imgsJump.get(i), null, null, 0, null, null, 
+					i == imgsMove.size() - 1 ? true : false);
 			chunks[i] = jumpChunk;
 		}
 		
@@ -79,7 +82,8 @@ public class Character implements ICharacter
 	public Chunk[] down() {
 		Chunk[] chunks = new Chunk[imgsDown.size()];
 		for (int i = 0; i < imgsDown.size(); i++) {
-			Chunk downChunk = new Chunk(imgsDown.get(i), null, null, 0, null, null);
+			Chunk downChunk = new Chunk(imgsDown.get(i), null, null, 0, null, null,
+					i == imgsMove.size() - 1 ? true : false);
 			chunks[i] = downChunk;
 		}
 		
@@ -90,7 +94,8 @@ public class Character implements ICharacter
 		Chunk[] chunks = new Chunk[imgsAbility1.size()];
 
 		for (int i = 0; i < imgsAbility1.size(); i++) {
-			Chunk abilityChunk = new Chunk(imgsAbility1.get(i), null, null, 0, null, null);
+			Chunk abilityChunk = new Chunk(imgsAbility1.get(i), null, null, 0, null, null,
+					i == imgsMove.size() - 1 ? true : false);
 			chunks[i] = abilityChunk;
 		}
 
@@ -101,7 +106,8 @@ public class Character implements ICharacter
 		Chunk[] chunks = new Chunk[imgsAbility2.size()];
 
 		for (int i = 0; i < imgsAbility2.size(); i++) {
-			Chunk abilityChunk = new Chunk(imgsAbility2.get(i), null, null, 0, null, null);
+			Chunk abilityChunk = new Chunk(imgsAbility2.get(i), null, null, 0, null, null,
+					i == imgsMove.size() - 1 ? true : false);
 			chunks[i] = abilityChunk;
 		}
 
@@ -112,7 +118,8 @@ public class Character implements ICharacter
 		Chunk[] chunks = new Chunk[imgsAbility3.size()];
 
 		for (int i = 0; i < imgsAbility3.size(); i++) {
-			Chunk abilityChunk = new Chunk(imgsAbility3.get(i), null, null, 0, null, null);
+			Chunk abilityChunk = new Chunk(imgsAbility3.get(i), null, null, 0, null, null,
+					i == imgsMove.size() - 1 ? true : false);
 			chunks[i] = abilityChunk;
 		}
 

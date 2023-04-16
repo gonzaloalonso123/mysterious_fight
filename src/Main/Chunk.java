@@ -14,14 +14,16 @@ public class Chunk {
 	private int[] movement;
 	private int damage;
 	private String sound;
+	private boolean isLastChunk;
 	
-	public Chunk(Image image, Rectangle bodyHitbox, Rectangle attackHitbox, int damage, int[] movement, String sound) {
+	public Chunk(Image image, Rectangle bodyHitbox, Rectangle attackHitbox, int damage, int[] movement, String sound, boolean isLastChunk) {
 		this.image = image;
 		this.bodyHitbox = bodyHitbox;
 		this.attackHitbox = attackHitbox;
 		this.damage = damage;
 		this.movement = movement;
 		this.sound = sound;
+		this.isLastChunk = isLastChunk;
 	}
 	
 	public String getSound() {
@@ -54,6 +56,10 @@ public class Chunk {
 
 	public int getDamage() {
 		return damage;
+	}
+	
+	public boolean isLastChunk() {
+		return isLastChunk;
 	}
 
 	public void setImage(Image image) {

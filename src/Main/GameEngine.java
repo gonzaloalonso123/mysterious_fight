@@ -30,6 +30,7 @@ public class GameEngine extends JPanel implements ActionListener {
 	boolean gameOver = false;
 
 	Character[] characters = new Character[2];
+	int[] actions = new int[2];
 
 	Timer timer;
 	Image background;
@@ -127,14 +128,13 @@ public class GameEngine extends JPanel implements ActionListener {
 			} else {
 				characters[i].setAttackHitbox(null);
 			}
-			else 
-			{	
-				characters[i].setAttackHitbox(null);
-			}
 			
 			if (currentChunk.getSound() != null) {
 				sound(currentChunk.getSound());
 			} 
+			if (allChunks.get(i).get(0).isLastChunk()) {
+				actions[i]--;
+			}
 		}
 
 		for (int i = 0; i < 2; i++) {
@@ -160,9 +160,13 @@ public class GameEngine extends JPanel implements ActionListener {
 	}
 
 	public void addChunks(int index, Chunk[] chunks) {
-		for (int i = 0; i < chunks.length; i++) {
-			allChunks.get(index).add(chunks[i]);
+		if (actions[index] < 2) {
+			actions[index]++;			
+			for (int i = 0; i < chunks.length; i++) {
+				allChunks.get(index).add(chunks[i]);
+			}
 		}
+		
 	}
 
 	public void gameOver() {
@@ -187,50 +191,49 @@ public class GameEngine extends JPanel implements ActionListener {
 		@Override
 		public void keyPressed(KeyEvent e) {
 			super.keyPressed(e);
-
 			switch (e.getKeyCode()) {
-			case KeyEvent.VK_UP:
-				addChunks(0, characters[0].jump());
-				break;
-			case KeyEvent.VK_LEFT:
-				addChunks(0, characters[0].move(Directions.Left));
-				break;
-			case KeyEvent.VK_RIGHT:
-				addChunks(0, characters[0].move(Directions.Right));
-				break;
-			case KeyEvent.VK_DOWN:
-				addChunks(0, characters[0].down());
-				break;
-			case KeyEvent.VK_MINUS:
-				addChunks(0, characters[0].ability1());
-				break;
-			case KeyEvent.VK_PLUS:
-				addChunks(0, characters[0].ability2());
-				break;
-			case KeyEvent.VK_ENTER:
-				addChunks(0, characters[0].ability3());
-				break;
-			case KeyEvent.VK_A:
-				addChunks(1, characters[1].move(Directions.Left));
-				break;
-			case KeyEvent.VK_D:
-				addChunks(1, characters[1].move(Directions.Right));
-				break;
-			case KeyEvent.VK_W:
-				addChunks(1, characters[1].jump());
-				break;
-			case KeyEvent.VK_S:
-				addChunks(1, characters[1].down());
-				break;
-			case KeyEvent.VK_SPACE:
-				addChunks(1, characters[1].ability1());
-				break;
-			case KeyEvent.VK_E:
-				addChunks(1, characters[1].ability2());
-				break;
-			case KeyEvent.VK_SHIFT:
-				addChunks(1, characters[1].ability3());
-				break;
+				case KeyEvent.VK_UP:
+					addChunks(0, characters[0].jump());
+					break;
+				case KeyEvent.VK_LEFT:
+					addChunks(0, characters[0].move(Directions.Left));
+					break;
+				case KeyEvent.VK_RIGHT:
+					addChunks(0, characters[0].move(Directions.Right));
+					break;
+				case KeyEvent.VK_DOWN:
+					addChunks(0, characters[0].down());
+					break;
+				case KeyEvent.VK_MINUS:
+					addChunks(0, characters[0].ability1());
+					break;
+				case KeyEvent.VK_PLUS:
+					addChunks(0, characters[0].ability2());
+					break;
+				case KeyEvent.VK_ENTER:
+					addChunks(0, characters[0].ability3());
+					break;
+				case KeyEvent.VK_A:
+					addChunks(1, characters[1].move(Directions.Left));
+					break;
+				case KeyEvent.VK_D:
+					addChunks(1, characters[1].move(Directions.Right));
+					break;
+				case KeyEvent.VK_W:
+					addChunks(1, characters[1].jump());
+					break;
+				case KeyEvent.VK_S:
+					addChunks(1, characters[1].down());
+					break;
+				case KeyEvent.VK_SPACE:
+					addChunks(1, characters[1].ability1());
+					break;
+				case KeyEvent.VK_E:
+					addChunks(1, characters[1].ability2());
+					break;
+				case KeyEvent.VK_SHIFT:
+					addChunks(1, characters[1].ability3());
+					break;
 			}
 		}
 	}
