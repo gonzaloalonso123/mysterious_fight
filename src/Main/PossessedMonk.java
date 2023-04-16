@@ -104,11 +104,6 @@ public class PossessedMonk extends Character {
 		return idle();
 	}
 
-	@Override
-	public Chunk[] ability4() {
-		// TODO Auto-generated method stub
-		return super.ability4();
-	}
 
 	public void loadImages() {
 		this.imgsIdle.add(new ImageIcon(getClass().getResource("/Images/PossessedMonk/idle1.png")).getImage());

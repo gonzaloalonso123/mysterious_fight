@@ -77,6 +77,7 @@ public class GameEngine extends JPanel implements ActionListener {
 					System.out.println("Not loaded");
 				}
 			}
+			System.out.println(characters[i].getAttackHitbox());
 			if (characters[i].getAttackHitbox() != null) {
 				paintHitBox(g2D, characters[i].getAttackHitbox());
 			}
@@ -103,39 +104,34 @@ public class GameEngine extends JPanel implements ActionListener {
 			if (allChunks.get(i).size() == 0) {
 				this.addChunks(i, characters[i].idle());
 			}
-
 			Chunk currentChunk = allChunks.get(i).get(0);
 
 			characters[i].setCurrentImage(currentChunk.getImage());
 			if (currentChunk.getMovement() != null) {
 				Rectangle bodyHitBox = characters[i].getBodyHitbox();
-				if (bodyHitBox.x + bodyHitBox.width <= WIDTH && bodyHitBox.x >= 0
-						&& bodyHitBox.y + bodyHitBox.height <= HEIGHT && bodyHitBox.x >= 0) {
-					characters[i]
-							.setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
-									characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
-					if (currentChunk.getBodyHitbox() != null) {
-						characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
-					}
+				bodyHitBox.x += currentChunk.getMovement()[0];
+				bodyHitBox.y += currentChunk.getMovement()[1];
+
+				characters[i].setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
+						characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
+				if (currentChunk.getBodyHitbox() != null) {
+					characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
+				} else {
+					characters[i].setBodyHitbox(bodyHitBox);
 				}
 			}
 
 			if (currentChunk.getAttackHitbox() != null) {
-				System.out.println("eentra");
 				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
-			}
-			if (currentChunk.getSound() != null) {
-				sound(currentChunk.getSound());
 			} else {
 				characters[i].setAttackHitbox(null);
 			}
-		}
-
-		for (int i = 0; i < 2; i++) {
-			Chunk currentChunk = allChunks.get(i).get(0);
-			Chunk otherChunk = allChunks.get((i + 1) % 2).get(0);
+			if (currentChunk.getSound() != null) {
+				sound(currentChunk.getSound());
+			}
+			
 			if (currentChunk.getDamage() != 0) {
-				if (currentChunk.getAttackHitbox().intersects(otherChunk.getBodyHitbox())) {
+				if (currentChunk.getAttackHitbox().intersects(characters[i + 1 % 2].getBodyHitbox())) {
 					characters[i + 1 % 2].setHp(characters[i + 1 % 2].getHp() - currentChunk.getDamage());
 				}
 			}

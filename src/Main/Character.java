@@ -31,28 +31,24 @@ public class Character implements ICharacter
 	
 	public Chunk[] move(Directions direction) {
 		Chunk[] chunks = new Chunk[imgsMove.size()];
-		System.out.println(direction);
 		for (int i = 0; i < imgsMove.size(); i++) {
 			int[] movement = new int[2];
-			Rectangle auxBodyHitbox = this.bodyHitbox;
 			switch (direction) {
 			case Right:
 				this.direction = 1;
 				movement[0] += this.movementUnits;
 				movement[1] = 0;
-				auxBodyHitbox.x += this.movementUnits;
 				break;
 			case Left:
 				this.direction = -1;
 				movement[0] -= this.movementUnits;
 				movement[1] = 0;
-				auxBodyHitbox.x -= this.movementUnits;
 				break;
 			default:
 				break;
 			}
 			if (direction == Directions.Left || direction == Directions.Right) {
-				Chunk moveChunk = new Chunk(imgsMove.get(i), auxBodyHitbox, null, 0, movement, null);
+				Chunk moveChunk = new Chunk(imgsMove.get(i), null, null, 0, movement, null);
 				chunks[i] = moveChunk;
 			}
 		}
