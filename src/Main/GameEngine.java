@@ -104,26 +104,28 @@ public class GameEngine extends JPanel implements ActionListener {
 			if (allChunks.get(i).size() == 0) {
 				this.addChunks(i, characters[i].idle());
 			}
-
 			Chunk currentChunk = allChunks.get(i).get(0);
 
 			characters[i].setCurrentImage(currentChunk.getImage());
 			if (currentChunk.getMovement() != null) {
 				Rectangle bodyHitBox = characters[i].getBodyHitbox();
-				if (bodyHitBox.x + bodyHitBox.width <= WIDTH && bodyHitBox.x >= 0
-						&& bodyHitBox.y + bodyHitBox.height <= HEIGHT && bodyHitBox.x >= 0) {
-					characters[i]
-							.setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
-									characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
-					if (currentChunk.getBodyHitbox() != null) {
-						characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
-					}
+				bodyHitBox.x += currentChunk.getMovement()[0];
+				bodyHitBox.y += currentChunk.getMovement()[1];
+
+				characters[i].setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
+						characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
+				if (currentChunk.getBodyHitbox() != null) {
+					characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
+				} else {
+					characters[i].setBodyHitbox(bodyHitBox);
 				}
 			}
 
 			if (currentChunk.getAttackHitbox() != null) {
 				//System.out.println(currentChunk.getAttackHitbox());
 				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
+			} else {
+				characters[i].setAttackHitbox(null);
 			}
 			else 
 			{	
@@ -139,7 +141,7 @@ public class GameEngine extends JPanel implements ActionListener {
 			Chunk currentChunk = allChunks.get(i).get(0);
 			Chunk otherChunk = allChunks.get((i + 1) % 2).get(0);
 			if (currentChunk.getDamage() != 0) {
-				if (currentChunk.getAttackHitbox().intersects(otherChunk.getBodyHitbox())) {
+				if (currentChunk.getAttackHitbox().intersects(characters[i + 1 % 2].getBodyHitbox())) {
 					characters[i + 1 % 2].setHp(characters[i + 1 % 2].getHp() - currentChunk.getDamage());
 				}
 			}
