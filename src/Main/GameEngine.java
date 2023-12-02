@@ -41,8 +41,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Psycon(500, 200);
-		characters[1] = new Psycon(50, 200);
+		characters[0] = new Placeholder(500, 200);
+		characters[1] = new Placeholder(50, 200);
 
 		characters[0].setDirection(-1);
 		characters[1].setDirection(1);
@@ -124,7 +124,8 @@ public class GameEngine extends JPanel implements ActionListener {
 
 			if (currentChunk.getAttackHitbox() != null) {
 				//System.out.println(currentChunk.getAttackHitbox());
-				characters[i].setAttackHitbox(currentChunk.getAttackHitbox());
+				Rectangle r = currentChunk.getAttackHitbox();
+				characters[i].setAttackHitbox(new Rectangle(r.x, r.y, r.width * characters[i].direction, r.height));
 			} else {
 				characters[i].setAttackHitbox(null);
 			}
