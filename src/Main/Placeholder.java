@@ -42,6 +42,7 @@ public class Placeholder extends Character {
 				this.bodyHitbox.y + this.bodyHitbox.height / 2 + offsetY, 
 				hitboxWidth, 
 				hitboxHeight));
+		chunks[0].setDamage(50);
 		
 		return chunks;
 	}

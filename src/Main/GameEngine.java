@@ -24,13 +24,16 @@ public class GameEngine extends JPanel implements ActionListener {
 
 	final int WIDTH = 1000;
 	final int HEIGHT = 600;
+	
+	final int PLAYERS = 2;
+	final int MAX_ACTIONS = 2;
 
 	ArrayList<ArrayList<Chunk>> allChunks = new ArrayList<ArrayList<Chunk>>();
 
 	boolean gameOver = false;
 
-	Character[] characters = new Character[2];
-	int[] actions = new int[2];
+	Character[] characters = new Character[PLAYERS];
+	int[] actions = new int[MAX_ACTIONS];
 
 	Timer timer;
 	Image background;
@@ -62,28 +65,31 @@ public class GameEngine extends JPanel implements ActionListener {
 		g2D.drawImage(background, 0, 0, null);
 		g2D.setFont(new Font("Ink free", Font.BOLD, 20));
 		g2D.setColor(Color.red);
-		g2D.drawString("▊▊▊▊▊▊▊▊▊▊", 5, 20);
+		if (!gameOver)
+			g2D.drawString("❤❤❤❤❤❤❤❤❤❤", 5, 20);
+		else
+			g2D.drawString("", 5, 20);
 
-		for (int i = 0; i < characters.length; i++) {
-			if (characters[i].getDirection() == 1) {
-				g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0],
-						characters[i].getLocation()[1], null);
+		for (int player = 0; player < PLAYERS; player++) {
+			if (characters[player].getDirection() == 1) {
+				g2D.drawImage(characters[player].currentImage, characters[player].getLocation()[0],
+						characters[player].getLocation()[1], null);
 			} else {
 				try {
-					int width = characters[i].currentImage.getWidth(getFocusCycleRootAncestor());
-					int height = characters[i].currentImage.getHeight(getFocusCycleRootAncestor());
-					g2D.drawImage(characters[i].currentImage, characters[i].getLocation()[0] + width,
-							characters[i].getLocation()[1], -width, height, null);
+					int width = characters[player].currentImage.getWidth(getFocusCycleRootAncestor());
+					int height = characters[player].currentImage.getHeight(getFocusCycleRootAncestor());
+					g2D.drawImage(characters[player].currentImage, characters[player].getLocation()[0] + width,
+							characters[player].getLocation()[1], -width, height, null);
 				} catch (Exception e) {
 					System.out.println("Not loaded");
 				}
 			}
-			if (characters[i].getAttackHitbox() != null) 
+			if (characters[player].getAttackHitbox() != null) 
 			{
-				paintHitBox(g2D, characters[i].getAttackHitbox());
+				paintHitBox(g2D, characters[player].getAttackHitbox());
 			}
-			if (characters[i].getBodyHitbox() != null) {
-				paintHitBox(g2D, characters[i].getBodyHitbox());
+			if (characters[player].getBodyHitbox() != null) {
+				paintHitBox(g2D, characters[player].getBodyHitbox());
 			}
 		}
 	}
@@ -101,73 +107,106 @@ public class GameEngine extends JPanel implements ActionListener {
 
 	public void executeNextChunks() {
 
-		for (int i = 0; i < 2; i++) {
-			if (allChunks.get(i).size() == 0) {
-				this.addChunks(i, characters[i].idle());
-			}
-			Chunk currentChunk = allChunks.get(i).get(0);
+		for (int player = 0; player < PLAYERS; player++) {
+			addIdleChunkIfNeeded(player);
+			setImage(player);
+			move(player);
+			setAttackHitbox(player);
+			addSound(player);
+			freeSpaceForNewActionIfEnded(player);
+		}
 
-			characters[i].setCurrentImage(currentChunk.getImage());
-			if (currentChunk.getMovement() != null) {
-				Rectangle bodyHitBox = characters[i].getBodyHitbox();
+		for (int player = 0; player < PLAYERS; player++) {
+			dealDamage(player);
+		}
+
+		for (int player = 0; player < PLAYERS; player++) {
+			checkDead(player);
+			removeChunk(player);
+		}
+	}
+	
+	public void addIdleChunkIfNeeded(int player)
+	{
+		if (allChunks.get(player).size() == 0)
+			addChunks(player, characters[player].idle());
+	}
+	
+	public void setImage(int player)
+	{
+		characters[player].setCurrentImage(allChunks.get(player).get(0).getImage());
+	}
+	
+	public void move(int player)
+	{
+		Chunk currentChunk = allChunks.get(player).get(0);
+		if (currentChunk.getMovement() != null) {
+			characters[player].setLocation(new int[] { characters[player].getLocation()[0] + currentChunk.getMovement()[0],
+					characters[player].getLocation()[1] + currentChunk.getMovement()[1] });
+			if (currentChunk.getBodyHitbox() != null) {
+				characters[player].setBodyHitbox(currentChunk.getBodyHitbox());
+			} else {
+				Rectangle bodyHitBox = characters[player].getBodyHitbox();
 				bodyHitBox.x += currentChunk.getMovement()[0];
 				bodyHitBox.y += currentChunk.getMovement()[1];
-
-				characters[i].setLocation(new int[] { characters[i].getLocation()[0] + currentChunk.getMovement()[0],
-						characters[i].getLocation()[1] + currentChunk.getMovement()[1] });
-				if (currentChunk.getBodyHitbox() != null) {
-					characters[i].setBodyHitbox(currentChunk.getBodyHitbox());
-				} else {
-					characters[i].setBodyHitbox(bodyHitBox);
-				}
-			}
-
-			if (currentChunk.getAttackHitbox() != null) {
-				//System.out.println(currentChunk.getAttackHitbox());
-				Rectangle r = currentChunk.getAttackHitbox();
-				characters[i].setAttackHitbox(new Rectangle(r.x, r.y, r.width * characters[i].direction, r.height));
-			} else {
-				characters[i].setAttackHitbox(null);
-			}
-			
-			if (currentChunk.getSound() != null) {
-				sound(currentChunk.getSound());
-			} 
-			if (allChunks.get(i).get(0).isLastChunk()) {
-				actions[i]--;
+				characters[player].setBodyHitbox(bodyHitBox);
 			}
 		}
-
-		for (int i = 0; i < 2; i++) {
-			Chunk currentChunk = allChunks.get(i).get(0);
-			Chunk otherChunk = allChunks.get((i + 1) % 2).get(0);
-			if (currentChunk.getDamage() != 0) {
-				if (currentChunk.getAttackHitbox().intersects(characters[i + 1 % 2].getBodyHitbox())) {
-					characters[i + 1 % 2].setHp(characters[i + 1 % 2].getHp() - currentChunk.getDamage());
-				}
-			}
+	}
+	
+	public void setAttackHitbox(int player)
+	{
+		Chunk currentChunk = allChunks.get(player).get(0);
+		if (currentChunk.getAttackHitbox() != null) {
+			Rectangle r = currentChunk.getAttackHitbox();
+			characters[player].setAttackHitbox(new Rectangle(r.x, r.y, r.width * characters[player].direction, r.height));
+		} else {
+			characters[player].setAttackHitbox(null);
 		}
-
-		allChunks.get(0).remove(0);
-		allChunks.get(1).remove(0);
-
-		if (characters[0].getHp() <= 0) {
-			this.gameOver = true;
-		}
-
-		if (characters[1].getHp() <= 0) {
-			this.gameOver = true;
+	}
+	
+	public void addSound(int player)
+	{
+		Chunk currentChunk = allChunks.get(player).get(0);
+		if (currentChunk.getSound() != null) {
+			sound(currentChunk.getSound());
 		}
 	}
 
 	public void addChunks(int index, Chunk[] chunks) {
-		if (actions[index] < 2) {
+		if (actions[index] < MAX_ACTIONS) {
 			actions[index]++;			
 			for (int i = 0; i < chunks.length; i++) {
 				allChunks.get(index).add(chunks[i]);
 			}
 		}
 		
+	}
+	
+	public void freeSpaceForNewActionIfEnded(int player)
+	{
+		if (allChunks.get(player).get(0).isLastChunk()) {
+			actions[player]--;
+		}
+	}
+	
+	public void dealDamage(int player)
+	{
+		if (characters[player].getAttackHitbox() != null && characters[player].getAttackHitbox().intersects(characters[(player + 1) % PLAYERS].getBodyHitbox())) {
+			characters[(player + 1) % PLAYERS].setHp(characters[(player + 1) % PLAYERS].getHp() - allChunks.get(player).get(0).getDamage());
+		}
+	}
+	
+	public void removeChunk(int player)
+	{
+		allChunks.get(player).remove(0);
+	}
+	
+	public void checkDead(int player)
+	{
+		if (characters[player].getHp() <= 0) {
+			this.gameOver = true;
+		}
 	}
 
 	public void gameOver() {

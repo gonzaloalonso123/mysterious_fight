@@ -11,7 +11,7 @@ public class Character implements ICharacter
 	protected int movementUnits = 20;
 	
 	protected Rectangle bodyHitbox;
-	protected Rectangle attackHitbox;	
+	protected Rectangle attackHitbox;
 	
 	protected ArrayList<Image> imgsAbility1 = new ArrayList<Image>();
 	protected ArrayList<Image> imgsAbility2 = new ArrayList<Image>();
