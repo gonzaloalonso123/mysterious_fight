@@ -27,6 +27,8 @@ public class GameEngine extends JPanel implements ActionListener {
 	
 	final int PLAYERS = 2;
 	final int MAX_ACTIONS = 2;
+	
+	final int MAX_HEALTH = 20;
 
 	ArrayList<ArrayList<Chunk>> allChunks = new ArrayList<ArrayList<Chunk>>();
 
@@ -44,11 +46,11 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Placeholder(500, 200);
-		characters[1] = new Placeholder(50, 200);
+		characters[0] = new Placeholder(WIDTH/6, 200);
+		characters[1] = new Placeholder(WIDTH - WIDTH/3, 200);
 
-		characters[0].setDirection(-1);
-		characters[1].setDirection(1);
+		characters[0].setDirection(1);
+		characters[1].setDirection(-1);
 
 		allChunks.add(new ArrayList<Chunk>());
 		allChunks.add(new ArrayList<Chunk>());
@@ -63,18 +65,15 @@ public class GameEngine extends JPanel implements ActionListener {
 		Graphics2D g2D = (Graphics2D) g;
 
 		g2D.drawImage(background, 0, 0, null);
-		g2D.setFont(new Font("Ink free", Font.BOLD, 20));
-		g2D.setColor(Color.red);
-		if (!gameOver)
-			g2D.drawString("❤❤❤❤❤❤❤❤❤❤", 5, 20);
-		else
-			g2D.drawString("", 5, 20);
+		g2D.setFont(new Font("Arial Black", Font.BOLD, 30));
+		g2D.setColor(Color.black);
 
 		for (int player = 0; player < PLAYERS; player++) {
 			if (characters[player].getDirection() == 1) {
 				g2D.drawImage(characters[player].currentImage, characters[player].getLocation()[0],
 						characters[player].getLocation()[1], null);
-			} else {
+			} 
+			else {
 				try {
 					int width = characters[player].currentImage.getWidth(getFocusCycleRootAncestor());
 					int height = characters[player].currentImage.getHeight(getFocusCycleRootAncestor());
@@ -91,6 +90,38 @@ public class GameEngine extends JPanel implements ActionListener {
 			if (characters[player].getBodyHitbox() != null) {
 				paintHitBox(g2D, characters[player].getBodyHitbox());
 			}
+			
+			String playerHealth = "";
+			if (player == 0)
+			{
+				for (int i = 0; i < MAX_HEALTH; i++)
+				{
+					if (characters[player].hp > i)
+						playerHealth += ".";
+					else
+						playerHealth += " ";
+				}				
+			}
+			else
+			{
+				for (int i = MAX_HEALTH - 1; i >= 0; i--)
+				{
+					if (characters[player].hp > i)
+						playerHealth += ".";
+					else
+						playerHealth += " ";
+				}				
+			}
+			g2D.drawString(playerHealth, player == 0 ? 7 : WIDTH - 225, 40);
+		}
+		if (gameOver)
+		{
+			if (characters[0].hp == 0 && characters[1].hp == 0)
+				g2D.drawString("DRAW", WIDTH / 2 - 10, 40);
+			else if (characters[0].hp == 0)
+				g2D.drawString("PLAYER " + 2 + " WINS", WIDTH / 2 - 120, 40);
+			else if (characters[1].hp == 0)
+				g2D.drawString("PLAYER " + 1 + " WINS", WIDTH / 2 - 120, 40);
 		}
 	}
 
@@ -100,29 +131,29 @@ public class GameEngine extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-
 		executeNextChunks();
 		repaint();
 	}
 
 	public void executeNextChunks() {
-
-		for (int player = 0; player < PLAYERS; player++) {
-			addIdleChunkIfNeeded(player);
-			setImage(player);
-			move(player);
-			setAttackHitbox(player);
-			addSound(player);
-			freeSpaceForNewActionIfEnded(player);
-		}
-
-		for (int player = 0; player < PLAYERS; player++) {
-			dealDamage(player);
-		}
-
-		for (int player = 0; player < PLAYERS; player++) {
-			checkDead(player);
-			removeChunk(player);
+		if (!gameOver) {
+			for (int player = 0; player < PLAYERS; player++) {
+				addIdleChunkIfNeeded(player);
+				move(player);
+				setAttackHitbox(player);
+				addSound(player);
+				freeSpaceForNewActionIfEnded(player);
+			}
+			
+			for (int player = 0; player < PLAYERS; player++) {
+				dealDamage(player);
+			}
+			
+			for (int player = 0; player < PLAYERS; player++) {
+				setImage(player);
+				checkDead(player);
+				removeChunk(player);
+			}			
 		}
 	}
 	
@@ -159,7 +190,14 @@ public class GameEngine extends JPanel implements ActionListener {
 		Chunk currentChunk = allChunks.get(player).get(0);
 		if (currentChunk.getAttackHitbox() != null) {
 			Rectangle r = currentChunk.getAttackHitbox();
-			characters[player].setAttackHitbox(new Rectangle(r.x, r.y, r.width * characters[player].direction, r.height));
+			if (characters[player].direction == 1)
+			{
+				characters[player].setAttackHitbox(new Rectangle(r.x, r.y, r.width, r.height));				
+			}
+			else
+			{
+				characters[player].setAttackHitbox(new Rectangle(r.x - r.width, r.y, r.width, r.height));
+			}
 		} else {
 			characters[player].setAttackHitbox(null);
 		}
@@ -173,11 +211,11 @@ public class GameEngine extends JPanel implements ActionListener {
 		}
 	}
 
-	public void addChunks(int index, Chunk[] chunks) {
-		if (actions[index] < MAX_ACTIONS) {
-			actions[index]++;			
+	public void addChunks(int player, Chunk[] chunks) {
+		if (actions[player] < MAX_ACTIONS) {
+			actions[player]++;
 			for (int i = 0; i < chunks.length; i++) {
-				allChunks.get(index).add(chunks[i]);
+				allChunks.get(player).add(chunks[i]);
 			}
 		}
 		
@@ -192,8 +230,12 @@ public class GameEngine extends JPanel implements ActionListener {
 	
 	public void dealDamage(int player)
 	{
-		if (characters[player].getAttackHitbox() != null && characters[player].getAttackHitbox().intersects(characters[(player + 1) % PLAYERS].getBodyHitbox())) {
-			characters[(player + 1) % PLAYERS].setHp(characters[(player + 1) % PLAYERS].getHp() - allChunks.get(player).get(0).getDamage());
+		int otherPlayer = (player + 1) % PLAYERS;
+		if (characters[player].getAttackHitbox() != null && characters[player].getAttackHitbox().intersects(characters[otherPlayer].getBodyHitbox())) {
+			characters[otherPlayer].setHp(characters[otherPlayer].getHp() - allChunks.get(player).get(0).getDamage());
+			allChunks.get(otherPlayer).clear();
+			actions[otherPlayer] = 0;
+			allChunks.get(otherPlayer).add(characters[otherPlayer].receiveDamage());
 		}
 	}
 	
@@ -233,46 +275,46 @@ public class GameEngine extends JPanel implements ActionListener {
 			super.keyPressed(e);
 			switch (e.getKeyCode()) {
 				case KeyEvent.VK_UP:
-					addChunks(0, characters[0].jump());
-					break;
-				case KeyEvent.VK_LEFT:
-					addChunks(0, characters[0].move(Directions.Left));
-					break;
-				case KeyEvent.VK_RIGHT:
-					addChunks(0, characters[0].move(Directions.Right));
-					break;
-				case KeyEvent.VK_DOWN:
-					addChunks(0, characters[0].down());
-					break;
-				case KeyEvent.VK_MINUS:
-					addChunks(0, characters[0].ability1());
-					break;
-				case KeyEvent.VK_PLUS:
-					addChunks(0, characters[0].ability2());
-					break;
-				case KeyEvent.VK_ENTER:
-					addChunks(0, characters[0].ability3());
-					break;
-				case KeyEvent.VK_A:
-					addChunks(1, characters[1].move(Directions.Left));
-					break;
-				case KeyEvent.VK_D:
-					addChunks(1, characters[1].move(Directions.Right));
-					break;
-				case KeyEvent.VK_W:
 					addChunks(1, characters[1].jump());
 					break;
-				case KeyEvent.VK_S:
+				case KeyEvent.VK_LEFT:
+					addChunks(1, characters[1].move(Directions.Left));
+					break;
+				case KeyEvent.VK_RIGHT:
+					addChunks(1, characters[1].move(Directions.Right));
+					break;
+				case KeyEvent.VK_DOWN:
 					addChunks(1, characters[1].down());
 					break;
-				case KeyEvent.VK_SPACE:
+				case KeyEvent.VK_MINUS:
 					addChunks(1, characters[1].ability1());
 					break;
-				case KeyEvent.VK_E:
+				case KeyEvent.VK_PLUS:
 					addChunks(1, characters[1].ability2());
 					break;
-				case KeyEvent.VK_SHIFT:
+				case KeyEvent.VK_ENTER:
 					addChunks(1, characters[1].ability3());
+					break;
+				case KeyEvent.VK_A:
+					addChunks(0, characters[0].move(Directions.Left));
+					break;
+				case KeyEvent.VK_D:
+					addChunks(0, characters[0].move(Directions.Right));
+					break;
+				case KeyEvent.VK_W:
+					addChunks(0, characters[0].jump());
+					break;
+				case KeyEvent.VK_S:
+					addChunks(0, characters[0].down());
+					break;
+				case KeyEvent.VK_SPACE:
+					addChunks(0, characters[0].ability1());
+					break;
+				case KeyEvent.VK_E:
+					addChunks(0, characters[0].ability2());
+					break;
+				case KeyEvent.VK_SHIFT:
+					addChunks(0, characters[0].ability3());
 					break;
 			}
 		}

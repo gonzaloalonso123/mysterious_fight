@@ -23,6 +23,8 @@ public class Placeholder extends Character {
 
 		this.imgsAbility1.add(new ImageIcon(getClass().getResource("/Images/Placeholder/attack1.png")).getImage());
 		
+		this.imgsOnDamage = new ImageIcon(getClass().getResource("/Images/Placeholder/ondamage.png")).getImage();
+		
 		this.currentImage = imgsIdle.get(0);
 		int hitboxWidth = 150;
 		int hitboxHeight = 356;
@@ -34,15 +36,14 @@ public class Placeholder extends Character {
 		Chunk[] chunks = super.ability1();
 		int hitboxWidth = 100;
 		int hitboxHeight = 50;
-		int offsetX = 0;
 		int offsetY = -20;
 		
 		chunks[0].setAttackHitbox(new Rectangle(
-				this.bodyHitbox.x + this.bodyHitbox.width / 2 + offsetX, 
+				this.bodyHitbox.x + this.bodyHitbox.width / 2,
 				this.bodyHitbox.y + this.bodyHitbox.height / 2 + offsetY, 
 				hitboxWidth, 
 				hitboxHeight));
-		chunks[0].setDamage(50);
+		chunks[0].setDamage(5);
 		
 		return chunks;
 	}

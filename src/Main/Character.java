@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Character implements ICharacter 
 {	
 	protected String name;
-	protected int hp = 100;
+	protected int hp = 20;
 	protected int movementUnits = 20;
 	
 	protected Rectangle bodyHitbox;
@@ -20,6 +20,7 @@ public class Character implements ICharacter
 	protected ArrayList<Image> imgsIdle = new ArrayList<Image>();
 	protected ArrayList<Image> imgsJump = new ArrayList<Image>();
 	protected ArrayList<Image> imgsDown = new ArrayList<Image>();
+	protected Image imgsOnDamage;
 	
 	protected Image currentImage;
 	protected int[] location = new int[2];
@@ -124,6 +125,10 @@ public class Character implements ICharacter
 		}
 
 		return chunks;
+	}
+	
+	public Chunk receiveDamage() {
+		return new Chunk(imgsOnDamage, null, null, 0, null, null, true);
 	}
 
 	public int getHp() {
