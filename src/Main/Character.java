@@ -62,7 +62,7 @@ public class Character implements ICharacter
 		Chunk[] chunks = new Chunk[imgsIdle.size()];
 		for (int i = 0; i < imgsIdle.size(); i++) {
 			Chunk idleChunk = new Chunk(imgsIdle.get(i), null, null, 0, null, null, 
-					i == imgsMove.size() - 1 ? true : false);
+					i == imgsIdle.size() - 1 ? true : false);
 			chunks[i] = idleChunk;
 		}
 
@@ -73,7 +73,7 @@ public class Character implements ICharacter
 		Chunk[] chunks = new Chunk[imgsJump.size()];
 		for (int i = 0; i < imgsJump.size(); i++) {
 			Chunk jumpChunk = new Chunk(imgsJump.get(i), null, null, 0, null, null, 
-					i == imgsMove.size() - 1 ? true : false);
+					i == imgsJump.size() - 1 ? true : false);
 			chunks[i] = jumpChunk;
 		}
 		
@@ -84,7 +84,7 @@ public class Character implements ICharacter
 		Chunk[] chunks = new Chunk[imgsDown.size()];
 		for (int i = 0; i < imgsDown.size(); i++) {
 			Chunk downChunk = new Chunk(imgsDown.get(i), null, null, 0, null, null,
-					i == imgsMove.size() - 1 ? true : false);
+					i == imgsDown.size() - 1 ? true : false);
 			chunks[i] = downChunk;
 		}
 		
@@ -96,7 +96,7 @@ public class Character implements ICharacter
 
 		for (int i = 0; i < imgsAbility1.size(); i++) {
 			Chunk abilityChunk = new Chunk(imgsAbility1.get(i), null, null, 0, null, null,
-					i == imgsMove.size() - 1 ? true : false);
+					i == imgsAbility1.size() - 1 ? true : false);
 			chunks[i] = abilityChunk;
 		}
 
@@ -108,7 +108,7 @@ public class Character implements ICharacter
 
 		for (int i = 0; i < imgsAbility2.size(); i++) {
 			Chunk abilityChunk = new Chunk(imgsAbility2.get(i), null, null, 0, null, null,
-					i == imgsMove.size() - 1 ? true : false);
+					i == imgsAbility2.size() - 1 ? true : false);
 			chunks[i] = abilityChunk;
 		}
 
@@ -120,7 +120,7 @@ public class Character implements ICharacter
 
 		for (int i = 0; i < imgsAbility3.size(); i++) {
 			Chunk abilityChunk = new Chunk(imgsAbility3.get(i), null, null, 0, null, null,
-					i == imgsMove.size() - 1 ? true : false);
+					i == imgsAbility3.size() - 1 ? true : false);
 			chunks[i] = abilityChunk;
 		}
 

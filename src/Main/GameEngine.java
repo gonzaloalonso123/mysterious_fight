@@ -46,8 +46,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Placeholder(WIDTH/6, 200);
-		characters[1] = new Placeholder(WIDTH - WIDTH/3, 200);
+		characters[0] = new Psycon(-425/2 + 75 + 100, HEIGHT - 100 - 208);
+		characters[1] = new Placeholder(WIDTH - 200 - 100, HEIGHT - 100 - 356);
 
 		characters[0].setDirection(1);
 		characters[1].setDirection(-1);
@@ -142,7 +142,6 @@ public class GameEngine extends JPanel implements ActionListener {
 				move(player);
 				setAttackHitbox(player);
 				addSound(player);
-				freeSpaceForNewActionIfEnded(player);
 			}
 			
 			for (int player = 0; player < PLAYERS; player++) {
@@ -152,6 +151,7 @@ public class GameEngine extends JPanel implements ActionListener {
 			for (int player = 0; player < PLAYERS; player++) {
 				setImage(player);
 				checkDead(player);
+				freeSpaceForNewActionIfEnded(player);
 				removeChunk(player);
 			}			
 		}
@@ -174,14 +174,14 @@ public class GameEngine extends JPanel implements ActionListener {
 		if (currentChunk.getMovement() != null) {
 			characters[player].setLocation(new int[] { characters[player].getLocation()[0] + currentChunk.getMovement()[0],
 					characters[player].getLocation()[1] + currentChunk.getMovement()[1] });
-			if (currentChunk.getBodyHitbox() != null) {
-				characters[player].setBodyHitbox(currentChunk.getBodyHitbox());
-			} else {
-				Rectangle bodyHitBox = characters[player].getBodyHitbox();
-				bodyHitBox.x += currentChunk.getMovement()[0];
-				bodyHitBox.y += currentChunk.getMovement()[1];
-				characters[player].setBodyHitbox(bodyHitBox);
-			}
+		}	
+		if (currentChunk.getBodyHitbox() != null) {
+			characters[player].setBodyHitbox(currentChunk.getBodyHitbox());
+		} else if (currentChunk.getMovement() != null) {
+			Rectangle bodyHitBox = characters[player].getBodyHitbox();
+			bodyHitBox.x += currentChunk.getMovement()[0];
+			bodyHitBox.y += currentChunk.getMovement()[1];
+			characters[player].setBodyHitbox(bodyHitBox);
 		}
 	}
 	
