@@ -46,8 +46,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Placeholder(WIDTH/6, 200);
-		characters[1] = new Placeholder(WIDTH - WIDTH/3, 200);
+		characters[0] = new PossessedMonk(WIDTH/6, 200);
+		characters[1] = new PossessedMonk(WIDTH - WIDTH/3, 200);
 
 		characters[0].setDirection(1);
 		characters[1].setDirection(-1);
