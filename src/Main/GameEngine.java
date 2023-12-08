@@ -19,7 +19,7 @@ import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
+ 
 public class GameEngine extends JPanel implements ActionListener {
 
 	final int WIDTH = 1000;
@@ -46,8 +46,8 @@ public class GameEngine extends JPanel implements ActionListener {
 		requestFocusInWindow();
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-		characters[0] = new Psycon(-425/2 + 75 + 100, HEIGHT - 100 - 208);
-		characters[1] = new Placeholder(WIDTH - 200 - 100, HEIGHT - 100 - 356);
+		characters[0] = new PossessedMonk(100, HEIGHT - 100 - 400);
+		characters[1] = new Psycon(WIDTH - 425/2 - 75 - 100, HEIGHT - 100 - 208);
 
 		characters[0].setDirection(1);
 		characters[1].setDirection(-1);
@@ -85,10 +85,10 @@ public class GameEngine extends JPanel implements ActionListener {
 			}
 			if (characters[player].getAttackHitbox() != null) 
 			{
-				paintHitBox(g2D, characters[player].getAttackHitbox());
+				//paintHitBox(g2D, characters[player].getAttackHitbox());
 			}
 			if (characters[player].getBodyHitbox() != null) {
-				paintHitBox(g2D, characters[player].getBodyHitbox());
+				//paintHitBox(g2D, characters[player].getBodyHitbox());
 			}
 			
 			String playerHealth = "";

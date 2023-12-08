@@ -87,7 +87,6 @@ public class PossessedMonk extends Character {
 		Chunk[] chunks = super.ability2();
 		for (int i = 0; i < chunks.length; i++) {
 			chunks[i].setMovement(new int[] { -40 * super.getDirection(), 0 });
-			System.out.println(Arrays.toString(chunks[i].getMovement()));
 		}
 		return chunks;
 	}
